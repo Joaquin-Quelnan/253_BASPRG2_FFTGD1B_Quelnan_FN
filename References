@@ -1,0 +1,92 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+
+int getBet(int& money)
+{
+    int bet;
+
+    do
+    {
+        cout << "\nCurrent Moneh: " << money << endl;
+        cout << "Enter beth: ";
+        cin >> bet;
+
+    } while (bet <= 0 || bet > money);
+
+    money -= bet;
+
+    return bet;
+}
+
+
+void rollDice(int& die1, int& die2)
+{
+    die1 = rand() % 6 + 1;
+    die2 = rand() % 6 + 1;
+}
+
+int main()
+{
+    srand(time(0));
+
+    int money = 1000;
+
+    while (money > 0)
+    {
+        int bet = getBet(money);
+
+        int pDie1, pDie2;
+        int mDie1, mDie2;
+
+        rollDice(pDie1, pDie2);
+        rollDice(mDie1, mDie2);
+
+        int playerTotal = pDie1 + pDie2;
+        int mTotal = mDie1 + mDie2;
+
+        cout << "\nRolled: "
+             << pDie1 << " and " << pDie2
+             << " = " << playerTotal << endl;
+
+        cout << "\nAi bro rolled: "
+             << mDie1 << " and " << mDie2
+             << " = " << mTotal << endl;
+
+
+        if (playerTotal == mTotal)
+        {
+            cout << "Drawwwwww" << endl;
+            money += bet;
+        }
+
+
+        else if (pDie1 == 1 && pDie2 == 1)
+        {
+            cout << "snake eyess" << endl;
+            money += bet * 3;
+        }
+
+
+        else if (playerTotal > mTotal)
+        {
+            cout << "Successs" << endl;
+            money += bet * 2;
+        }
+
+
+        else
+        {
+            cout << "Fail" << endl;
+        }
+
+        cout << "Current Moenh: " << money << endl;
+    }
+
+    cout << "\nYou gone broke" << endl;
+
+    return 0;
+}
