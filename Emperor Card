@@ -1,1 +1,229 @@
+#include <iostream>
+#include <vector>
+#include <ctime>
+#include <cstdlib>
 
+using namespace std;
+
+vector<string> makedeck(bool emperorside);
+void applydeck(vector<string> deck);
+
+string kaijiplay(vector<string>& deck);
+string bastardoplay(vector<string>& deck);
+
+int wager(int chance);
+
+int matchup(string kaijihand, string bastardohand);
+
+void startround(
+    int round,
+    int& chance,
+    int& moneyearn
+);
+
+int main() {
+
+    srand(time(0));
+
+    int round = 1;
+    int eardrumdistance = 30;
+    int moneyearn = 0;
+
+    while (round <= 12 && eardrumdistance > 0) {
+
+        cout << "\nROUNDDDDDDDD " << round << endl;
+
+        startround(round, eardrumdistance, moneyearn);
+
+        cout << "\nCurrent Cash: " << moneyearn << " yen\n";
+        cout << "\nEardrum Distance: " << eardrumdistance;
+
+        round++;
+    }
+
+    if (eardrumdistance <= 0) {
+        cout << "\nBad Ending - You're a Loser\n";
+    }
+    else if (moneyearn >= 20000000) {
+        cout << "\nBEST ENDING - YOU'RE RICH GGGRRRAAAUUUGGGGHHHHH\n";
+    }
+    else {
+        cout << "\nMeh Ending\n";
+    }
+
+    return 0;
+}
+
+vector<string> makedeck(bool emperorside) {
+
+    vector<string> deck;
+
+    for (int i = 0; i < 4; i++) {
+        deck.push_back("Civilian");
+    }
+
+    if (emperorside) {
+        deck.push_back("Emperor");
+    }
+    else {
+        deck.push_back("Slave");
+    }
+
+    return deck;
+}
+
+void applydeck(vector<string> deck) {
+
+    cout << "\nYour Cards:\n";
+
+    for (int i = 0; i < deck.size(); i++) {
+        cout << i + 1 << ". " << deck[i] << endl;
+    }
+}
+
+string kaijiplay(vector<string>& deck) {
+
+    int choice;
+
+    applydeck(deck);
+
+    cout << "\nPick a Card, Any Caaaarrrddddd: ";
+    cin >> choice;
+
+    while (choice < 1 || choice > deck.size()) {
+        cout << "Not an option dummy: ";
+        cin >> choice;
+    }
+
+    string chosencard = deck[choice - 1];
+
+    deck.erase(deck.begin() + (choice - 1));
+
+    return chosencard;
+}
+
+string bastardoplay(vector<string>& deck) {
+
+    int numbercards = rand() % deck.size();
+
+    string chosencard = deck[numbercards];
+
+    deck.erase(deck.begin() + numbercards);
+
+    return chosencard;
+}
+
+int wager(int amount) {
+
+    int amountwager;
+
+    cout << "\nWager: ";
+    cin >> amountwager;
+
+    while (amountwager < 1 || amountwager > amount) {
+        cout << "No. Enter another wager: ";
+        cin >> amountwager;
+    }
+
+    return amountwager;
+}
+
+int matchup(string kaijicard, string bastardocard) {
+
+    if (kaijicard == bastardocard) {
+        return 0;
+    }
+
+    if (kaijicard == "Civilian" && bastardocard == "Slave") {
+        return 1;
+    }
+
+    if (kaijicard == "Emperor" && bastardocard == "Civilian") {
+        return 1;
+    }
+
+    if (kaijicard == "Slave" && bastardocard == "Emperor") {
+        return 1;
+    }
+
+    return -1;
+}
+
+void startround(
+    int round,
+    int& eardrumdistance,
+    int& moneyearn
+) {
+
+    bool kaijiemperor;
+
+    if (
+        round == 1 ||
+        round == 2 ||
+        round == 3 ||
+        round == 7 ||
+        round == 8 ||
+        round == 9
+        ) {
+        kaijiemperor = true;
+    }
+    else {
+        kaijiemperor = false;
+    }
+
+    if (kaijiemperor) {
+        cout << "\nKaiji Side: Emperor's New Groove\n";
+    }
+    else {
+        cout << "\nKaiji Side: Slaayyy(ve)\n";
+    }
+
+    int amountwager = wager(eardrumdistance);
+
+    vector<string> kaijideck = makedeck(kaijiemperor);
+    vector<string> bastardodeck = makedeck(!kaijiemperor);
+
+    bool roundFinished = false;
+
+    while (!roundFinished) {
+
+        string kaijicard = kaijiplay(kaijideck);
+        string bastardocard = bastardoplay(bastardodeck);
+
+        cout << "\nKaiji played: " << kaijicard << endl;
+        cout << "Slimy Bastard played: " << bastardocard << endl;
+
+        int result = matchup(kaijicard, bastardocard);
+
+        if (
+            kaijicard == "Emperor" ||
+            kaijicard == "Slave" ||
+            bastardocard == "Emperor" ||
+            bastardocard == "Slave"
+            ) {
+
+            roundFinished = true;
+
+            if (result == 1) {
+
+                cout << "\nKaiji Wins!\n";
+
+                if (kaijiemperor) {
+                    moneyearn += amountwager * 100000;
+                }
+                else {
+                    moneyearn += amountwager * 800000;
+                }
+            }
+            else {
+
+                cout << "\nKaiji Lose\n";
+
+                eardrumdistance -= amountwager;
+            }
+        }
+        else {
+            cout << "\nDraw...\n";
+        }
+    }
+}
