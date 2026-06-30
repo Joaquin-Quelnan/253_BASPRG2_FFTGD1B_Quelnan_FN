@@ -1,0 +1,130 @@
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+struct item
+{
+    string name;
+    int gold;
+};
+
+item* generate()
+{
+    item* result = new item();
+
+    int random = rand() % 5 + 1;
+
+    switch (random)
+    {
+    case 1:
+        result->name = "Mithril Ore";
+        result->gold = 100;
+        break;
+
+    case 2:
+        result->name = "Sharp Talon";
+        result->gold = 50;
+        break;
+
+    case 3:
+        result->name = "Thick Leather";
+        result->gold = 25;
+        break;
+
+    case 4:
+        result->name = "Jellopy";
+        result->gold = 5;
+        break;
+
+    case 5:
+        result->name = "Cursed Stone";
+        result->gold = 0;
+        break;
+    }
+
+    return result;
+}
+
+void enterbackrooms(int& pgold)
+{
+    pgold -= 25;
+
+    int add = 1;
+    int dungeongold = 0;
+    string choice;
+
+    cout << "\n-Entered Backrooms-\n";
+
+    while (true)
+    {
+        item* loot = generate();
+
+        cout << "\nYou Acquired: " << loot->name << endl;
+
+        if (loot->name == "Cursed Stone")
+        {
+            cout << "Loot Lost, womp womp\n";
+
+            delete loot;
+            break;
+        }
+
+        dungeongold += loot->gold * add;
+
+        cout << "Dungeon Gold: " << dungeongold << endl;
+
+        cout << "Keep Going? Ye or Nah: ";
+        cin >> choice;
+
+        delete loot;
+
+        if (choice == "Ye" || choice == "ye")
+        {
+            add++;
+        }
+        else if (choice == "Nah" || choice == "nah")
+        {
+            pgold += dungeongold;
+
+            cout << "\nYou left with...\n";
+            cout << "Gold: " << pgold << endl;
+
+            break;
+        }
+        else
+        {
+            cout << "no.\n";
+        }
+    }
+}
+
+int main()
+{
+    srand(time(0));
+
+    int currentgold = 50;
+
+    while (currentgold >= 25 && currentgold < 500)
+    {
+
+        cout << "Current Blingdiling: " << currentgold << endl;
+
+        enterbackrooms(currentgold);
+    }
+
+    if (currentgold >= 500)
+    {
+        cout << "Yay! Enough Gold! Satisfactory\n";
+        cout << "Total Blingdiling: " << currentgold << endl;
+    }
+    else
+    {
+        cout << "Not Enough Gold :(\n";
+        cout << "Total Blingdiling: " << currentgold << endl;
+    }
+
+    return 0;
+}
