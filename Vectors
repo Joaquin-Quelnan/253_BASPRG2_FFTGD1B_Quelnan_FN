@@ -1,0 +1,99 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+
+vector<string> fillinventory()
+{
+    vector<string> inventory;
+
+    string items[] =
+    {
+        "Red Potion",
+        "Elixir",
+        "Empty Bottle",
+        "Blue Potion",
+        "Green Potion"
+    };
+
+    for (int i = 0; i < 10; i++)
+    {
+        int randomindex = rand() % 5;
+        inventory.push_back(items[randomindex]);
+    }
+
+    return inventory;
+}
+
+
+void displayinventory(const vector<string>& inventory)
+{
+    cout << "\nCurrent Inventory:\n";
+
+    for (int i = 0; i < inventory.size(); i++)
+    {
+        cout << i + 1 << ". " << inventory[i] << endl;
+    }
+}
+
+
+int countitem(const vector<string>& inventory, const string& itemname)
+{
+    int count = 0;
+
+    for (int i = 0; i < inventory.size(); i++)
+    {
+        if (inventory[i] == itemname)
+        {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+
+void removeitem(vector<string>& inventory, const string& itemname)
+{
+    for (int i = 0; i < inventory.size(); i++)
+    {
+        if (inventory[i] == itemname)
+        {
+            inventory.erase(inventory.begin() + i);
+            i--;
+        }
+    }
+}
+
+int main()
+{
+    srand(time(0));
+
+
+    vector<string> inventory = fillinventory();
+
+
+    displayinventory(inventory);
+
+
+    string itemtocount = "Red Potion";
+    int total = countitem(inventory, itemtocount);
+
+    cout << "\nNumber of " << itemtocount << ": "
+         << total << endl;
+
+
+    string itemtoremove;
+
+    removeitem(inventory, itemtoremove);
+
+    cout << "\nRemoved stuff:";
+
+    displayinventory(inventory);
+
+    return 0;
+}
